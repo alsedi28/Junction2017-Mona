@@ -141,6 +141,7 @@ class User(models.Model):
         db_table = 'users'
 
     avatar = models.ImageField(upload_to=get_file_path_avatar, blank=True)
+    token = models.TextField(null=True)
     username = models.TextField(null=True)
     facebook_uid = models.TextField(null=True)
     movies_will_watch = models.ManyToManyField(Movie, blank=True, related_name='movies_will_watch_1')
