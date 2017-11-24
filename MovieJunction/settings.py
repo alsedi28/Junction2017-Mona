@@ -27,7 +27,7 @@ SECRET_KEY = '&yw=(c@er_+ioci_465uwf_u$wkb(4i8z_xb$t*cmw-(+s-g^^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [u'193.167.0.212']
 
 
 # Application definition
@@ -58,8 +58,6 @@ ROOT_URLCONF = 'MovieJunction.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,10 +78,12 @@ WSGI_APPLICATION = 'MovieJunction.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': '',
         'USER': '',
-        'PASSWORD': ''
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': ''
     }
 }
 
