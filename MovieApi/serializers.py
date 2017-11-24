@@ -79,3 +79,52 @@ class MovieSerializer(serializers.ModelSerializer):
         exclude = ('genre_rus_1', 'genre_rus_2', 'genre_rus_3', 'genre_rus_4', 'genre_rus_5', 'genre_rus_6', 'genre_rus_7',
         'genre_rus_8', 'genre_rus_9', 'genre_rus_10')
 
+
+class MovieAlreadyWatchedSerializer(serializers.ModelSerializer):
+    genres = GenreSerializer(many=True)
+    production_countries = ProductionCountrySerializer(many=True)
+    rate = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Movie
+        fields = (
+        'id', 'title_en', 'vote_average', 'backdrop_path', 'poster_path', 'popularity', 'genres', 'production_countries',
+        'rate', 'release_year')
+
+    def get_rate(self, obj):
+        return MovieAlreadyWatched.objects.get(movie=obj,
+                                               user=User.objects.get(token=self.context['token'])).rate
+
+
+class MovieWillWatchSerializer(serializers.ModelSerializer):
+    genres = GenreSerializer(many=True)
+    production_countries = ProductionCountrySerializer(many=True)
+
+    class Meta:
+        model = Movie
+        fields = ('id', 'title_en', 'vote_average', 'backdrop_path', 'poster_path', 'popularity', 'genres', 'production_countries', 'release_year')
+
+
+class MovieFilterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = ('id', 'title_en', 'vote_average', 'backdrop_path', 'poster_path', 'release_year')
+
+
+class UserSerializer(serializers.ModelSerializer):
+    count_movies_will_watch = serializers.SerializerMethodField()
+    count_movies_already_watched = serializers.SerializerMethodField()
+    count_friends = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'avatar', 'count_movies_will_watch', 'count_movies_already_watched', 'count_friends')
+
+    def get_count_movies_will_watch(self, obj):
+        return len(obj.movies_will_watch.all())
+
+    def get_count_movies_already_watched(self, obj):
+        return len(MovieAlreadyWatched.objects.filter(user=obj))
+
+    def get_count_friends(self, obj):
+        return len(obj.friends.all())
