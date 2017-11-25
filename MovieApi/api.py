@@ -9,7 +9,7 @@ import requests
 import pandas as pd
 import numpy as np
 import base64
-
+import random
 
 class MovieDetails(generics.RetrieveAPIView):
     serializer_class = MovieSerializer
@@ -187,8 +187,9 @@ class EmojiFaceByPhoto(generics.ListAPIView):
         if 'image' not in request.POST.keys() or request.POST['image'] == "":
             return Response({"status": "parameter image is empty"}, status=400)
 
+        key = random.choice([_key, _key_2])
         headers = dict()
-        headers['Ocp-Apim-Subscription-Key'] = _key
+        headers['Ocp-Apim-Subscription-Key'] = key
         headers['Content-Type'] = 'application/octet-stream'
 
         result = processRequest(base64.b64decode(request.POST['image']), headers)
@@ -304,7 +305,6 @@ class MoviesFilterByEmoji(generics.ListAPIView):
     queryset = Movie.objects.all()
 
     def get_queryset(self):
-        print
         if 'emoji' not in self.request.GET.keys():
             return Response({"status": "parameter emoji is empty"}, status=400)
 
@@ -327,14 +327,15 @@ class MoviesFilterByEmoji(generics.ListAPIView):
         for e in emoji_lst_exc:
             movies = movies.exclude(emoji__description_code__in=[e])
 
-        movies = movies.filter(release_year__gte=2000)
+        movies = movies.filter(release_year__gte=2000, vote_average__gte=6.5)
 
-        return movies
+        return movies.order_by('?')[:10]
 
 
 # Helpers
 _url = 'https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize'
 _key = '8109829b80824cccb74cf36c36d62d97'  # primary key
+_key_2 = 'd68dc1d9c4aa4f4297e417b3d78c4000'  # primary key №2
 _maxNumRetries = 10
 
 
