@@ -10,4 +10,5 @@ urlpatterns = [
     #url(r'^movies/filter/emoji/$', MoviesFilterByEmoji.as_view()),
     url(r'^user/add/friend/$', AddFriend.as_view()),
     url(r'^user/(?P<token>[0-9a-zA-Z_-]+)/$', UserDetails.as_view()),
+    url(r'^emoji/face/$', EmojiFaceByPhoto.as_view()),
 ]

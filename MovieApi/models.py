@@ -156,3 +156,11 @@ class MovieAlreadyWatched(models.Model):
     user = models.ManyToManyField(User, blank=True)
     rate = models.IntegerField(null=True)
 
+class EmojiFace(models.Model):
+    class Meta:
+        db_table = 'emoji_face'
+
+    description_code = models.TextField(null=True)
+    description = models.TextField(null=True)
+    code = models.TextField(null=True)
+    value = models.FloatField(default=0)

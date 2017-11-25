@@ -4,7 +4,11 @@ from .serializers import *
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.response import Response
-
+import time
+import requests
+import pandas as pd
+import numpy as np
+import base64
 
 class MovieDetails(generics.RetrieveAPIView):
     serializer_class = MovieSerializer
@@ -173,3 +177,73 @@ class UserDetails(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     lookup_field = 'token'
     queryset = User.objects.all()
+
+
+class EmojiFaceByPhoto(generics.ListAPIView):
+    queryset = EmojiFace.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        if 'image' not in request.POST.keys() or request.POST['image'] == "":
+            return Response({"status": "parameter image is empty"}, status=400)
+
+        headers = dict()
+        headers['Ocp-Apim-Subscription-Key'] = _key
+        headers['Content-Type'] = 'application/octet-stream'
+
+        result = processRequest(base64.b64decode(request.POST['image']), headers)
+        if result is None:
+            return Response({"status": "unexpected error"}, status=400)
+
+        result_dict = dict()
+        result_list = []
+        for i in result.index:
+            result_dict[i] = result[i]
+            result_list.append(i)
+
+        emoji = list(EmojiFace.objects.filter(description__in=result_list))
+
+        for i in emoji:
+            i.value = result_dict[i.description]
+
+        return Response(EmojiFaceSerializer(emoji, many=True).data)
+
+#Helpers
+_url = 'https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize'
+_key = '8109829b80824cccb74cf36c36d62d97' #primary key
+_maxNumRetries = 10
+
+def processRequest(data, headers):
+    retries = 0
+    result = None
+
+    while True:
+        response = requests.request('post', _url, json=None, data=data, headers=headers, params=None)
+
+        if response.status_code == 429:
+            if retries <= _maxNumRetries:
+                time.sleep(1)
+                retries += 1
+                continue
+            else:
+                break
+
+        elif response.status_code == 200 or response.status_code == 201:
+
+            if 'content-length' in response.headers and int(response.headers['content-length']) == 0:
+                result = None
+            elif 'content-type' in response.headers and isinstance(response.headers['content-type'], str):
+                if 'application/json' in response.headers['content-type'].lower():
+                    result = response.json() if response.content else None
+                    sq = pd.Series([face['faceRectangle']['width'] * face['faceRectangle']['height'] for face in result])
+                    sq = sq.astype(float)/sq.sum()
+
+                    sc = np.array([sq[i] * np.array(face['scores'].values()) for i, face in enumerate(result)])
+                    sc = pd.Series(data=np.sum(sc, axis=0), index=result[0]['scores'].keys()).sort_values(ascending=False)
+                    if sc[0] < 0.9:
+                        tmp = sc[:2]
+                        result = tmp.apply(lambda x: x/sum(tmp))
+                    else:
+                        result = sc[:1]
+        break
+
+    return result

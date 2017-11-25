@@ -128,3 +128,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_count_friends(self, obj):
         return len(obj.friends.all())
+
+
+class EmojiFaceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmojiFace
+        fields = ('id', 'description_code', 'description', 'value', 'code')
