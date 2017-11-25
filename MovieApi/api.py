@@ -192,7 +192,7 @@ class EmojiFaceByPhoto(generics.ListAPIView):
 
         result = processRequest(base64.b64decode(request.POST['image']), headers)
         if result is None:
-            return Response({"status": "unexpected error"}, status=400)
+            return []
 
         result_dict = dict()
         result_list = []
@@ -206,6 +206,102 @@ class EmojiFaceByPhoto(generics.ListAPIView):
             i.value = result_dict[i.description]
 
         return Response(EmojiFaceSerializer(emoji, many=True).data)
+
+
+class UserFriends(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        if 'token' not in self.request.GET.keys():
+            return Response({"status": "parameter token is empty"}, status=400)
+
+        token = self.request.GET['token']
+        try:
+            user = User.objects.get(token=token)
+            return user.friends
+        except ObjectDoesNotExist:
+            return Response({"status": "the user doesn't exist."}, status=400)
+
+
+class MoviesForFriends(generics.ListAPIView):
+    serializer_class = MovieSerializer
+    queryset = Movie.objects.all()
+
+    def get_queryset(self):
+        if 'users' not in self.request.GET.keys():
+            return Response({"status": "users token is empty"}, status=400)
+
+        movies_id = [3,4,7]
+        users = [int(u) for u in self.request.GET['users'].split(',')]
+
+        try:
+            voting = Voting.objects.create()
+
+            for p in users:
+                voting.participant.add(User.objects.get(id=p))
+
+            for m in movies_id:
+                voting.movie.add(Movie.objects.get(id=m))
+
+            voting.save()
+
+            return Movie.objects.filter(id__in=movies_id)
+        except ObjectDoesNotExist:
+            return Response({"status": "the user or movie doesn't exist."}, status=400)
+        except Exception:
+            return Response({"status": "unexpected error"}, status=400)
+
+
+class VoteMovie(generics.CreateAPIView):
+    serializer_class = MovieSerializer
+
+    def post(self, request, *args, **kwargs):
+        if 'token' not in request.POST.keys() or request.POST['token'] == "":
+            return Response({"status": "parameter token is empty"}, status=400)
+
+        movie_id = int(self.kwargs.get('movie_id'))
+        vote_id = int(self.kwargs.get('vote_id'))
+        token = request.POST['token']
+
+        try:
+            user = User.objects.get(token=token)
+            movie = Movie.objects.get(id=movie_id) #VotingMovie.objects.get(movie_id=movie_id, vote_id=vote_id)
+            voting = Voting.objects.get(id=vote_id)
+
+            user_vote = UserVote.objects.create(movie=movie, user=user)
+            user_vote.save()
+            voting.vote.add(user_vote)
+
+        except ObjectDoesNotExist:
+            return Response({"status": "either the voting or movie doesn't exist."}, status=400)
+        except Exception:
+            return Response({"status": "unexpected error"}, status=400)
+
+        return Response({"status": "ok"}, status=200)
+
+
+class VotingResult(generics.ListAPIView):
+    serializer_class = MovieSerializer
+    queryset = Movie.objects.all()
+
+    def get_queryset(self):
+        vote_id = self.kwargs.get('pk')
+
+        try:
+            voting = Voting.objects.get(id=vote_id)
+            movies = voting.movie
+            vote_result = dict()
+
+            for m in movies:
+                vote_result[m.id] = voting.vote.filter(movie__id=m.id).count()
+
+            return Response(vote_result, status=200)
+        except ObjectDoesNotExist:
+            return Response({"status": "the voting or movie doesn't exist."}, status=400)
+        except Exception:
+            return Response({"status": "unexpected error"}, status=400)
+
 
 #Helpers
 _url = 'https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize'
@@ -234,6 +330,8 @@ def processRequest(data, headers):
             elif 'content-type' in response.headers and isinstance(response.headers['content-type'], str):
                 if 'application/json' in response.headers['content-type'].lower():
                     result = response.json() if response.content else None
+                    if len(result) == 0:
+                        return None
                     sq = pd.Series([face['faceRectangle']['width'] * face['faceRectangle']['height'] for face in result])
                     sq = sq.astype(float)/sq.sum()
 
