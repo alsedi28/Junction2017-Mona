@@ -303,6 +303,39 @@ class VotingResult(generics.ListAPIView):
             return Response({"status": "unexpected error"}, status=400)
 
 
+class MoviesFilterByEmoji(generics.ListAPIView):
+    serializer_class = MovieSerializer
+    queryset = Movie.objects.all()
+
+    def get_queryset(self):
+        print
+        if 'emoji' not in self.request.GET.keys():
+            return Response({"status": "parameter emoji is empty"}, status=400)
+
+        emoji_face = self.request.GET['emoji'].split(',')
+        em = [m.description_code for m in EmojiFace.objects.filter(id__in=emoji_face)]
+
+        if len(em) == 2:
+            emoji_lst_inc, emoji_lst_exc = recommend(em[0], em[1])
+        elif len(em) == 1:
+            emoji_lst_inc, emoji_lst_exc = recommend(em[0], em[0])
+        else:
+            return []
+
+        movies = Movie.objects.exclude(cast__isnull=True).exclude(crew__isnull=True).exclude(
+            backdrops__isnull=True).exclude(overview_en=None).exclude(title_en=None) \
+            .exclude(backdrop_path=None).exclude(poster_path=None)
+
+        movies = movies.filter(genre_main__in=emoji_lst_inc)
+
+        for e in emoji_lst_exc:
+            movies = movies.exclude(emoji__description_code__in=[e])
+
+        movies = movies.filter(release_year__gte=2000)[:50]
+        movies = movies.values()
+
+        return movies
+
 #Helpers
 _url = 'https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize'
 _key = '8109829b80824cccb74cf36c36d62d97' #primary key
@@ -345,3 +378,27 @@ def processRequest(data, headers):
         break
 
     return result
+
+
+def recommend(em1, em2):
+    positive = ['Comedy', 'Animation', 'Family', 'Romance']
+    negative = ['Crime', 'Horror', 'Mystery']
+
+    #Поменять путь до файла на серваке
+    main = pd.read_excel('C:/Users/PC/Desktop/MovieJunction/MovieApi/Data/EmotionsToGenres.xls', encoding='cp1252')
+
+    pos_genres = main[(main['Main emotion'] == em1.lower()) & (main['Additional emotion'] == em2.lower())] \
+        [['Genre 1', 'Genre 2', 'Genre 3', 'Genre 4', 'Genre 5']].values[0]
+    pos_genres = [genre for genre in pos_genres if isinstance(genre, (str, unicode))]
+
+    neg_genres = main[(main['Main emotion'] == em1.lower()) & (main['Additional emotion'] == em2.lower())] \
+        ['Excluding group'].iloc[0]
+
+    if neg_genres == 'Positive':
+        neg_genres = positive
+    elif neg_genres == 'Negative':
+        neg_genres = negative
+    else:
+        neg_genres = []
+
+    return pos_genres, neg_genres
