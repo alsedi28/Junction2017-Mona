@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import base64
 
+
 class MovieDetails(generics.RetrieveAPIView):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
@@ -225,14 +226,11 @@ class UserFriends(generics.ListAPIView):
 
 
 class MoviesForFriends(generics.ListAPIView):
-    serializer_class = MovieSerializer
-    queryset = Movie.objects.all()
-
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
         if 'users' not in self.request.GET.keys():
             return Response({"status": "users token is empty"}, status=400)
 
-        movies_id = [3,4,7]
+        movies_id = [3, 4, 7]
         users = [int(u) for u in self.request.GET['users'].split(',')]
 
         try:
@@ -246,7 +244,8 @@ class MoviesForFriends(generics.ListAPIView):
 
             voting.save()
 
-            return Movie.objects.filter(id__in=movies_id)
+            return Response({"voting_id": voting.id,
+                             "movies": MovieSerializer(Movie.objects.filter(id__in=movies_id), many=True).data}, status=200)
         except ObjectDoesNotExist:
             return Response({"status": "the user or movie doesn't exist."}, status=400)
         except Exception:
@@ -282,8 +281,6 @@ class VoteMovie(generics.CreateAPIView):
 
 
 class VotingResult(generics.RetrieveAPIView):
-    queryset = Movie.objects.all()
-
     def get(self, request, *args, **kwargs):
         vote_id = self.kwargs.get('pk')
 
@@ -334,10 +331,12 @@ class MoviesFilterByEmoji(generics.ListAPIView):
 
         return movies
 
-#Helpers
+
+# Helpers
 _url = 'https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize'
-_key = '8109829b80824cccb74cf36c36d62d97' #primary key
+_key = '8109829b80824cccb74cf36c36d62d97'  # primary key
 _maxNumRetries = 10
+
 
 def processRequest(data, headers):
     retries = 0
@@ -363,16 +362,18 @@ def processRequest(data, headers):
                     result = response.json() if response.content else None
                     if len(result) == 0:
                         return None
-                    sq = pd.Series([face['faceRectangle']['width'] * face['faceRectangle']['height'] for face in result])
-                    sq = sq.astype(float)/sq.sum()
+                    sq = pd.Series(
+                        [face['faceRectangle']['width'] * face['faceRectangle']['height'] for face in result])
+                    sq = sq.astype(float) / sq.sum()
 
                     sc = np.array([sq[i] * np.array(face['scores'].values()) for i, face in enumerate(result)])
-                    sc = pd.Series(data=np.sum(sc, axis=0), index=result[0]['scores'].keys()).sort_values(ascending=False)
+                    sc = pd.Series(data=np.sum(sc, axis=0), index=result[0]['scores'].keys()).sort_values(
+                        ascending=False)
                     if sc[0] < 0.9:
                         tmp = sc[:2]
-                        result = tmp.apply(lambda x: x/sum(tmp))
+                        result = tmp.apply(lambda x: x / sum(tmp))
                     else:
-                        result = sc[:1]
+                        result = pd.Series(data={sc.index[0]: 1})
         break
 
     return result
@@ -382,7 +383,7 @@ def recommend(em1, em2):
     positive = ['Comedy', 'Animation', 'Family', 'Romance']
     negative = ['Crime', 'Horror', 'Mystery']
 
-    #Поменять путь до файла на серваке
+    # Поменять путь до файла на серваке
     main = pd.read_excel('C:/Users/PC/Desktop/MovieJunction/MovieApi/Data/EmotionsToGenres.xls', encoding='cp1252')
 
     pos_genres = main[(main['Main emotion'] == em1.lower()) & (main['Additional emotion'] == em2.lower())] \
