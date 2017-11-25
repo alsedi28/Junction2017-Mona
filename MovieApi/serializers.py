@@ -62,7 +62,7 @@ class EmojiSerializer(serializers.ModelSerializer):
         fields = ('id', 'description_en', 'code', 'type')
 
 
-class MovieSerializer(serializers.ModelSerializer):
+class MovieFullSerializer(serializers.ModelSerializer):
     genres = GenreSerializer(many=True)
     production_companies = ProductionCompanySerializer(many=True)
     production_countries = ProductionCountrySerializer(many=True)
@@ -134,3 +134,21 @@ class EmojiFaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmojiFace
         fields = ('id', 'description_code', 'description', 'value', 'code')
+
+
+class MovieSerializer(serializers.ModelSerializer):
+    genres = GenreSerializer(many=True)
+    cast = CastSerializer(many=True)
+    crew = CrewSerializer(many=True)
+    posters = PosterSerializer(many=True)
+
+    class Meta:
+        model = Movie
+        fields = ('genre_main', 'overview_en', 'popularity', 'poster_path', 'title_en', 'vote_average',
+                  'cast', 'crew', 'genres', 'posters')
+
+
+class MovieFeedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = ('poster_path')

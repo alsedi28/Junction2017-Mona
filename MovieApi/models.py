@@ -183,20 +183,20 @@ class EmojiFace(models.Model):
 
 
 #Голос пользователя
-class UserVote(models.Model):
+class VoteUser(models.Model):
     class Meta:
-        db_table = 'user_vote'
+        db_table = 'vote_userV3'
 
-    movie = models.OneToOneField(Movie, blank=True, null=True)
-    user = models.OneToOneField(User, blank=True, null=True)
+    movie_id = models.IntegerField(null=True)
+    user_id = models.IntegerField(null=True)
 
 
 #Голосование
 class Voting(models.Model):
     class Meta:
-        db_table = 'voting'
+        db_table = 'votingV3'
 
     participant = models.ManyToManyField(User, blank=True, related_name='voting')
-    movie = models.ManyToManyField(Movie, blank=True, related_name='voting_m')
-    vote = models.ManyToManyField(UserVote, blank=True, related_name='voting')
+    movie = models.ManyToManyField(Movie, blank=True, related_name='voting')
+    vote = models.ManyToManyField(VoteUser, blank=True, related_name='voting')
 

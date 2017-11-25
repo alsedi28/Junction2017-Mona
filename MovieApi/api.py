@@ -265,13 +265,13 @@ class VoteMovie(generics.CreateAPIView):
         token = request.POST['token']
 
         try:
-            user = User.objects.get(token=token)
-            movie = Movie.objects.get(id=movie_id) #VotingMovie.objects.get(movie_id=movie_id, vote_id=vote_id)
+            user_id = User.objects.get(token=token).id
             voting = Voting.objects.get(id=vote_id)
 
-            user_vote = UserVote.objects.create(movie=movie, user=user)
-            user_vote.save()
-            voting.vote.add(user_vote)
+            if len(VoteUser.objects.filter(movie_id=movie_id, user_id=user_id)) == 0:
+                user_vote = VoteUser(movie_id=movie_id, user_id=user_id)
+                user_vote.save()
+                voting.vote.add(user_vote)
 
         except ObjectDoesNotExist:
             return Response({"status": "either the voting or movie doesn't exist."}, status=400)
@@ -281,20 +281,19 @@ class VoteMovie(generics.CreateAPIView):
         return Response({"status": "ok"}, status=200)
 
 
-class VotingResult(generics.ListAPIView):
-    serializer_class = MovieSerializer
+class VotingResult(generics.RetrieveAPIView):
     queryset = Movie.objects.all()
 
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
         vote_id = self.kwargs.get('pk')
 
         try:
             voting = Voting.objects.get(id=vote_id)
-            movies = voting.movie
+            movies = voting.movie.all()
             vote_result = dict()
 
             for m in movies:
-                vote_result[m.id] = voting.vote.filter(movie__id=m.id).count()
+                vote_result[m.id] = voting.vote.filter(movie_id=m.id).count()
 
             return Response(vote_result, status=200)
         except ObjectDoesNotExist:
@@ -304,7 +303,7 @@ class VotingResult(generics.ListAPIView):
 
 
 class MoviesFilterByEmoji(generics.ListAPIView):
-    serializer_class = MovieSerializer
+    serializer_class = MovieFeedSerializer
     queryset = Movie.objects.all()
 
     def get_queryset(self):
@@ -331,8 +330,7 @@ class MoviesFilterByEmoji(generics.ListAPIView):
         for e in emoji_lst_exc:
             movies = movies.exclude(emoji__description_code__in=[e])
 
-        movies = movies.filter(release_year__gte=2000)[:50]
-        movies = movies.values()
+        movies = movies.filter(release_year__gte=2000)
 
         return movies
 
