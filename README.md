@@ -1,4 +1,4 @@
-h1 **Inspiration**
+# **Inspiration**
 
 Cinema industry is rapidly growing, video content volume of superior quality is also skyrocketing.
 
@@ -14,7 +14,7 @@ Our team is strongly inspired by user expirience possible improvements while sea
 
 Our team is guided by a principle "Mobile First". That is why, our product is a moble application that is named MONA.
 
-h1 **What it does**
+# **What it does**
 
 We thought that all three track questions are highly interesting and perspective. So, we made our best to answer to all of them. However, we face with some technical issues, so the last question is not answered by our team,
 
@@ -46,7 +46,7 @@ One user suggests to his or her friend a movie session with a certain movie that
 
 The app solves the problem of prolonged movie search and provides users with an opportunity to get a movie watch scheduled in a quick way.
 
-h1 **How we built it**
+# **How we built it**
 
 We have started almost from scratch: we had not prepared materials - only idea that we have briefly formulated one week before the event.
 
@@ -58,14 +58,14 @@ So, we came and started!
 
 We had well balanced team, so tasks distribution was quite fair - all the tasks were controlled in Trello - very suitable tool for such short periods of development!
 
-h1 **Challenges we ran into**
+# **Challenges we ran into**
 
 We faced with few serious challenges that we have not even expected:
 
 * One of the teammate's laptop has broken down - it lead to certain tasks reallocation;
 * Some technical issues were resolving too much time - some other tasks suffered.
 
-h1 **Accomplishments that we're proud of**
+# **Accomplishments that we're proud of**
 
 We are really proud of working prototype launch. We had a great opportunity to demostrate it!
 
@@ -73,7 +73,7 @@ That was our initial goal - there is a great difference between mochups and work
 
 It was a great experience to collect objective feedback!
 
-h1 **What we learned**
+# **What we learned**
 
 There are valuable insights that we have collected:
 
@@ -82,7 +82,7 @@ There are valuable insights that we have collected:
 * There should be a reserve for unexpected technical issues that we have not take into attention;
 * Proper execution is much more important than just an idea.
 
-h1 **What's next for MONA**
+# **What's next for MONA**
 
 There are few main directions for development of the app:
 
