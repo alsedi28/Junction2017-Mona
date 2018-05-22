@@ -20,7 +20,7 @@ We thought that all three track questions are highly interesting and perspective
 
 I will provide all readers with short summary of each of two suggested solutions.
 
-**How to find movies I like?**
+### **How to find movies I like?**
 
 Each user has a certain emotional condition in a process of movie search. Emotional condition is a combination of emotions that has strong impact on movie search results.
 
@@ -32,7 +32,7 @@ One of the feature is - even few users can take part in emotions detecting proce
 
 The app is a solution of the problem of users’ unknown search criteria – now users are not forced to set any settings. The more data will be collected about users, the more personal relevant recommendation a user will get through MONA app.
 
-**How to plan my watching?**
+### **How to plan my watching?**
 
 The more people are going to watch a movie, the more difficult task is to choose it – the app makes users’ life easier. Each person has different preferences, however there is an intersection of preferences that maximize value of a movie watch.
 
