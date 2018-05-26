@@ -16,6 +16,13 @@ Our team is guided by a principle "Mobile First". That is why, our product is a 
 
 # **What it does**
 
+<p align="center">
+<img src="./screenshots/1.jpg" alt="1.jpg"/>
+</p>
+<p align="center">
+  <i>Home page</i>
+</p>
+
 We thought that all three track questions are highly interesting and perspective. So, we made our best to answer to all of them. However, we face with some technical issues, so the last question is not answered by our team,
 
 I will provide all readers with short summary of each of two suggested solutions.
@@ -24,17 +31,45 @@ I will provide all readers with short summary of each of two suggested solutions
 
 Each user has a certain emotional condition in a process of movie search. Emotional condition is a combination of emotions that has strong impact on movie search results.
 
+<p align="center">
+<img src="./screenshots/2.jpg" alt="2.jpg"/>
+</p>
+<p align="center">
+  <i>How it works? Emotions detection</i>
+</p>
+
 We detect two main user’s emotions (among 8 main emotions: anger, contempt, disgust, fear, happiness, neutral, sadness, surprise): through frontal camera and adapt search results to it.
 
 1 emotion symbolazes 1 emodji in the app. Emojis provide a user with exiting interactive experience.
 
 One of the feature is - even few users can take part in emotions detecting process. It is quite fun to detect emotions together – there is mathematic algorithm, summarizing all the emotions.
 
+<p align="center">
+<img src="./screenshots/3.jpg" alt="3.jpg"/>
+</p>
+<p align="center">
+  <i>Recommendations, based on emotions</i>
+</p>
+
 The app is a solution of the problem of users’ unknown search criteria – now users are not forced to set any settings. The more data will be collected about users, the more personal relevant recommendation a user will get through MONA app.
+
+<p align="center">
+<img src="./screenshots/4.jpg" alt="4.jpg"/>
+</p>
+<p align="center">
+  <i>Relevant recommendation</i>
+</p>
 
 ### **How to plan my watching?**
 
 The more people are going to watch a movie, the more difficult task is to choose it – the app makes users’ life easier. Each person has different preferences, however there is an intersection of preferences that maximize value of a movie watch.
+
+<p align="center">
+<img src="./screenshots/6.jpg" alt="6.jpg"/>
+</p>
+<p align="center">
+  <i>Plan watching with friends</i>
+</p>
 
 The app allows you to plan your watching with friends:
 
@@ -42,9 +77,37 @@ The app allows you to plan your watching with friends:
 * voting mechanic;
 * opportunity to add movie session to calendar.
 
+<p align="center">
+<img src="./screenshots/7.jpg" alt="7.jpg"/>
+</p>
+<p align="center">
+  <i>Plan watching with friends: pick date</i>
+</p>
+
 One user suggests to his or her friend a movie session with a certain movie that both friends have in bookmarks. If both friends approve the request there is an opportunity to add the event to calendar.
 
+<p align="center">
+<img src="./screenshots/8.jpg" alt="8.jpg"/>
+</p>
+<p align="center">
+  <i>Plan watching with friends: choose friends</i>
+</p>
+
 The app solves the problem of prolonged movie search and provides users with an opportunity to get a movie watch scheduled in a quick way.
+
+<p align="center">
+<img src="./screenshots/9.jpg" alt="9.jpg"/>
+</p>
+<p align="center">
+  <i>Plan watching with friends: select geo</i>
+</p>
+
+<p align="center">
+<img src="./screenshots/10.jpg" alt="10.jpg"/>
+</p>
+<p align="center">
+  <i>Profile page</i>
+</p>
 
 # **How we built it**
 
