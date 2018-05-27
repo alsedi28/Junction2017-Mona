@@ -162,3 +162,11 @@ We are really looking forward to lauch the app in the field!
 Many hackaton patricipants take part to boost their skiils - when they came home, their motivation gradually disappears. We will really try to stay product-oriented and to launch the app successfully!
 
 May the force with us!
+
+# **Crew**
+
+* [Sergey Ignatushchenko](https://github.com/alsedi28) - Back-end developer
+* [Maksim Shevchenko](https://github.com/maks-sh) - Data scientist, UX/UI
+* [Alexander Shoshiashvili](https://github.com/aleksandrshoshiashvili) - IOS developer
+* Mikhail Fokin - IOS developer
+* Ruslan Ledovsky - Product manager
