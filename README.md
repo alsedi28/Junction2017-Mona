@@ -166,7 +166,7 @@ May the force with us!
 # **Crew**
 
 * [Sergey Ignatushchenko](https://github.com/alsedi28) - Back-end developer
-* [Maksim Shevchenko](https://github.com/maks-sh) - Data scientist, UX/UI
+* [Maksim Shevchenko](https://github.com/maks-sh) - Data scientist
 * [Alexander Shoshiashvili](https://github.com/aleksandrshoshiashvili) - IOS developer
 * Mikhail Fokin - IOS developer
 * Ruslan Ledovsky - Product manager
