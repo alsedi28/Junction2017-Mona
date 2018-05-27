@@ -1,3 +1,7 @@
+<p align="center">
+<img src="./screenshots/0.jpg" alt="0.jpg"/>
+</p>
+
 # **Inspiration**
 
 Cinema industry is rapidly growing, video content volume of superior quality is also skyrocketing.
