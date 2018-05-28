@@ -46,7 +46,7 @@ We detect two main user’s emotions (among 8 main emotions: anger, contempt, di
 
 1 emotion symbolazes 1 emodji in the app. Emojis provide a user with exiting interactive experience.
 
-One of the feature is - even few users can take part in emotions detecting process. It is quite fun to detect emotions together – there is mathematic algorithm, summarizing all the emotions.
+One of the feature is - even few users can take part in emotions detecting process. It is quite fun to detect emotions together — there is mathematic algorithm, summarizing all the emotions.
 
 <p align="center">
 <img src="./screenshots/3.jpg" alt="3.jpg"/>
@@ -167,6 +167,6 @@ May the force with us!
 
 * [Sergey Ignatushchenko](https://github.com/alsedi28) - Back-end developer
 * [Maksim Shevchenko](https://github.com/maks-sh) - Data scientist
-* [Alexander Shoshiashvili](https://github.com/aleksandrshoshiashvili) - IOS developer
-* Mikhail Fokin - IOS developer
+* [Alexander Shoshiashvili](https://github.com/aleksandrshoshiashvili) - iOS developer
+* Mikhail Fokin - iOS developer
 * Ruslan Ledovsky - Product manager
